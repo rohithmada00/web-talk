@@ -1,4 +1,4 @@
-// functions for speech recognition 
+// speech recognition logic
 
 var recognizing = false;
 var final_transcript = '';
@@ -6,22 +6,13 @@ var transcript = '';
 var start_timestamp;
 let speech_to_text;
 
-async function requestMicAccessFirst() {
-    try {
-        await navigator.mediaDevices.getUserMedia({ audio: true });
-        console.log("Mic permission granted");
-        recognition.start(); // start only after permission is granted
-    } catch (err) {
-        console.error("Mic access error:", err.name);
-        alert("Please allow mic access in Chrome settings.");
-    }
-}
-
+// detect if user was redirected to a full tab for mic access
+const urlParams = new URLSearchParams(window.location.search);
+const micRedirected = urlParams.get('mic') === '1';
 
 if (!('webkitSpeechRecognition' in window)) {
     alert('This browser does not support speech recognition. Try Chrome.');
-}
-else {
+} else {
     var recognition = new webkitSpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
@@ -32,7 +23,12 @@ else {
         speech_to_text = document.getElementById("speech-to-text");
 
         startBtn.addEventListener("click", startButton);
-        stopBtn.addEventListener("click", () => recognition.stop());
+        stopBtn.addEventListener("click", stopButton);
+
+        // Optional: clean up URL after redirect
+        if (micRedirected) {
+            history.replaceState(null, '', window.location.pathname);
+        }
     });
 
     recognition.onerror = function (event) {
@@ -40,19 +36,16 @@ else {
         showInfo("Error: " + event.error);
     };
 
-
     recognition.onend = function () {
         recognizing = false;
         if (!transcript) {
             showInfo('Empty transcript');
-            return;
         }
-
     };
 
     recognition.onresult = function (event) {
         var interim_transcript = '';
-        var final_transcript = '';
+        final_transcript = '';
 
         for (var i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
@@ -63,45 +56,69 @@ else {
         }
         final_transcript = capitalize(final_transcript);
         speech_to_text.innerHTML = linebreak(final_transcript);
-        showInfo(interim_transcript)
-        if (final_transcript || interim_transcript) {
-            showInfo('inline-block');
-        }
+        showInfo(interim_transcript);
     };
-
 
     recognition.onstart = function () {
         recognizing = true;
-        showInfo('User is speeking now');
+        showInfo('User is speaking now');
     };
-
 }
-function startButton(event) {
+
+// mic permission + redirect handler
+async function ensureMicPermissionOrRedirect(event) {
+    const permission = await navigator.permissions.query({ name: 'microphone' });
+
+    if (permission.state === 'granted') {
+        return true;
+    }
+
+    if (micRedirected) {
+        return true; // already redirected, don't prompt again
+    }
+
+    const url = chrome.runtime.getURL('src/ui/pages/panel.html') + '?mic=1';
+    const confirmRedirect = confirm("Microphone access is needed. Open this panel in a new tab to allow permission?");
+    if (confirmRedirect) {
+        window.open(url, '_blank');
+    }
+
+    return false;
+}
+
+// start Speech Recognition
+async function startButton(event) {
+    const allowed = await ensureMicPermissionOrRedirect(event);
+    if (!allowed) return;
+
     final_transcript = '';
     recognition.lang = "en-US";
-    requestMicAccessFirst();
+    recognition.start();
     speech_to_text.innerHTML = '';
     showInfo('info_allow');
     start_timestamp = event.timeStamp;
 }
 
+// stop recognition
 function stopButton(event) {
     if (recognizing) {
         recognition.stop();
-        return;
     }
 }
 
+// for debugging
 function showInfo(info) {
     console.log(info);
 }
 
-var first_char = /\S/;
+// helpers
+
+const first_char = /\S/;
 function capitalize(s) {
-    return s.replace(first_char, function (m) { return m.toUpperCase(); });
+    return s.replace(first_char, (m) => m.toUpperCase());
 }
-var two_line = /\n\n/g;
-var one_line = /\n/g;
+const two_line = /\n\n/g;
+const one_line = /\n/g;
 function linebreak(s) {
     return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
 }
