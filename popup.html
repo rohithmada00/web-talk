@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web Talk</title>
+  <!-- Include Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+
+  <div id="popup">
+    <!-- Header with logo and title side by side -->
+    <header>
+      <div class="header-content">
+        <img src="assets/icon128.png" alt="Web Talk Logo" class="logo" />
+        <h1>Web Talk</h1>
+      </div>
+    </header>
+    
+
+
+    <!-- Voice Input Section: Speak button and recognized text field side by side -->
+    <section id="voice-input">
+      <div class="voice-input-container">
+        <button 
+            id="speak-search-btn" 
+            class="speak-btn" 
+            title="Search with voice">
+            <img src="assets/icons8-microphone-48.png" alt="Click to Speak" class="speak-icon" />
+            </button>
+        <div id="recognized-text" class="recognized-text">
+          <!-- Recognized text will be dynamically updated here -->
+        </div>
+      </div>
+      <p id="search-status">Search Text</p>
+    </section>
+
+
+
+    <!-- Answer / Summary Section -->
+    <section id="answer">
+      <h2>Answer</h2>
+      <div class="answer-container" id="answer-container">
+        <p id="answer-text">
+          Your summary or response will appear here.
+        </p>
+      </div>
+      <button id="toggle-expand-btn" class="toggle-btn">Expand</button>
+    </section>
+  </div>
+</body>
+</html>

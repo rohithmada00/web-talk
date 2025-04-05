@@ -1,0 +1,153 @@
+/* Base Styling */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background: #f1f3f4;
+}
+
+/* Popup Container */
+#popup {
+  width: 340px;
+  background: #f5f9ff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin: 10px;
+}
+
+/* Header */
+header {
+  background: linear-gradient(135deg, #4285f4, #34a853);
+  padding: 13px; /* Reduced padding (approx. 85% of original) */
+  color: #ffffff;
+}
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.header-content h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+/* Voice Input Section */
+#voice-input {
+  padding: 10px 15px;
+}
+.voice-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.speak-btn {
+  background-color: #f5f9ff;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+.speak-btn:hover {
+  background: linear-gradient(45deg, blue 0%, red 0%, green 50%, yellow 100%);
+  transition: background 0.3s ease;
+}
+.speak-icon {
+  width: 45px;
+  height: 45px;
+}
+.recognized-text {
+  flex-grow: 1;
+  min-height: 40px;
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 14px;
+  color: #202124;
+  display: flex;
+  align-items: center;
+}
+
+/* Search Status Text */
+#search-status {
+  font-size: 14px;
+  color: #5f6368;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* Answer Section */
+#answer {
+  padding: 0 15px 15px;
+}
+#answer h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #3c4043;
+  border-bottom: 1px solid #dadce0;
+  padding-bottom: 8px;
+}
+.answer-container {
+  max-height: 100px;
+  overflow-y: auto;
+  border: 1px solid #dadce0;
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 6px;
+  transition: max-height 0.3s ease;
+  color: #202124;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.answer-container.expanded {
+  max-height: none;
+}
+.toggle-btn {
+  display: block;
+  background-color: #34a853;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin: 10px auto 0;
+  transition: background-color 0.3s ease;
+}
+.toggle-btn:hover {
+  background-color: #2c8e46;
+}
+
+/* Pulsing Animation for Active Speech Recognition */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 10px rgba(66, 133, 244, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+  }
+}
+.speak-btn.listening {
+  animation: pulse 1.8s infinite;
+}
