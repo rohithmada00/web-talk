@@ -19,7 +19,7 @@ if (!('webkitSpeechRecognition' in window)) {
 
     document.addEventListener("DOMContentLoaded", () => {
         const startBtn = document.getElementById("start-btn");
-        const stopBtn = document.getElementById("stop-btn");
+        const stopBtn = document.getElementById("start-btn");
         speech_to_text = document.getElementById("speech-to-text");
 
         startBtn.addEventListener("click", startButton);
@@ -88,6 +88,12 @@ async function ensureMicPermissionOrRedirect(event) {
 
 // start Speech Recognition
 async function startButton(event) {
+    if (recognizing) {
+        //stop recognizing
+        recognition.stop();
+        final_transcript = '';
+    }
+    else{
     const allowed = await ensureMicPermissionOrRedirect(event);
     if (!allowed) return;
 
@@ -97,14 +103,9 @@ async function startButton(event) {
     speech_to_text.innerHTML = '';
     showInfo('info_allow');
     start_timestamp = event.timeStamp;
-}
-
-// stop recognition
-function stopButton(event) {
-    if (recognizing) {
-        recognition.stop();
     }
 }
+
 
 // for debugging
 function showInfo(info) {
