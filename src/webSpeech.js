@@ -6,6 +6,16 @@ var transcript = '';
 var start_timestamp;
 let speech_to_text;
 
+async function requestMicAccessFirst() {
+    try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        console.log("Mic permission granted");
+        recognition.start(); // start only after permission is granted
+    } catch (err) {
+        console.error("Mic access error:", err.name);
+        alert("Please allow mic access in Chrome settings.");
+    }
+}
 
 
 if (!('webkitSpeechRecognition' in window)) {
@@ -69,7 +79,7 @@ else {
 function startButton(event) {
     final_transcript = '';
     recognition.lang = "en-US";
-    recognition.start();
+    requestMicAccessFirst();
     speech_to_text.innerHTML = '';
     showInfo('info_allow');
     start_timestamp = event.timeStamp;
