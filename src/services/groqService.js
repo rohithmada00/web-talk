@@ -4,7 +4,7 @@ async function callApi(prompt) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <GROQ_API_KEY_HERE"',
+                'Authorization': 'Bearer <GROQ_API_KEY>',
             },
             body: JSON.stringify({
                 model: 'gemma2-9b-it',
@@ -12,7 +12,7 @@ async function callApi(prompt) {
                     { role: 'system', content: 'You are a helpful browser assistant.' },
                     { role: 'user', content: prompt }
                 ],
-                max_tokens: 1000,
+                max_tokens: 10000,
                 temperature: 0.7
             })
         });
@@ -53,6 +53,11 @@ export async function summarize(context) {
     return callApi(summarize_prompt(context));
 }
 
+export async function answerTheQuestion(context) {
+    return callApi(qa_prompt(context));
+
+}
+
 
 // prompt function
 function decideActionPrompt(user_transcript) {
@@ -62,13 +67,17 @@ function decideActionPrompt(user_transcript) {
             The available actions are:
             1. "search" - Use this for general search action, return what to search in google to get an apt browse result.
             2. "navigate" - Use this to navigate to a website. Return a complete URL for that website".
-            3. "summarize_page" – Use this to summarize the page. If you don't have the HTML/text content of the page yet, return this:
+            3. "summarize_page" - Use this to summarize the page. If you don't have the HTML/text content of the page yet, return this:
             {
             "action": "summarize_page",
             "data": "NEED_CONTEXT"
             }
-            4. "ask_question" - If the user asks a specific question about the content of the page, such as "What is the title of this page?" or "What is this page about?".
-            5. "need_context" – Use this **only if** your next action needs page context, and the user's input isn't clearly a request to summarize.
+            4. "ask_question" - If the user asks a question about the current page, and you know nothing about it, return this:
+            {
+            "action": "ask_question",
+            "data": User question here
+            }
+            5. "need_context" - Use this **only if** your next action needs page context, and the user's input isn't clearly a request to summarize.
 
             If the user's command does not clearly match any of the above actions, default to a "search" action using the most relevant keywords from the command.
 
@@ -96,6 +105,24 @@ function summarize_prompt(context) {
     {
     "action": "summarize_page", 
     "data": "summary"
+    }
+    `
+
+    return prompt;
+}
+
+function qa_prompt(context) {
+    const prompt = `
+    You are a browser assistant. Answer the question based on the content in the HTML provided. Be concise, clear and complete
+    Here is the content of the webpage:
+    """ 
+    ${context} 
+    """
+    Provide the answer in under 100 words. 
+    Reply in the following format:
+    {
+    "action": "ask_question", 
+    "data": "answer"
     }
     `
 

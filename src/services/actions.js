@@ -1,4 +1,4 @@
-import { summarize } from "./groqService.js";
+import { summarize, answerTheQuestion } from "./groqService.js";
 
 const actions = {
     search: (query) => {
@@ -14,22 +14,22 @@ const actions = {
     summarize_page: async (summary) => {
         console.log("Summarizing current page... (To be implemented)");
         // update summary
-        if (summary == "NEED_CONTEXT") {
-            // fetch context and prompt llm 
-            try {
-                let context = await actions.fetch_page_html();
-                const response = await summarize(context);
 
-                if (!response) {
-                    summary = "Summary could not be fetched";
-                } else {
-                    summary = response.data;
-                }
-            }
-            catch (e) {
-                console.log("summarize_page: ", e)
+        // fetch context and prompt llm 
+        try {
+            let context = await actions.fetch_page_html();
+            const response = await summarize(context);
+
+            if (!response) {
+                summary = "Summary could not be fetched";
+            } else {
+                summary = response.data;
             }
         }
+        catch (e) {
+            console.log("summarize_page: ", e)
+        }
+
 
         // TODO: update UI
         console.log("Page Summary", summary);
@@ -38,9 +38,31 @@ const actions = {
 
     },
 
-    ask_question: (question) => {
+    ask_question: async (question) => {
         console.log("Answering question about the page:", question);
-        // TODO: implement logic
+
+        // fetch context and prompt llm 
+        try {
+            let pageHtml = await actions.fetch_page_html();
+            var context = `Question: ${question}, Page HTML: ${pageHtml}`
+            const response = await answerTheQuestion(context);
+
+            if (!response) {
+                question = "Answer could not be fetched";
+            } else {
+                question = response.data;
+            }
+        }
+        catch (e) {
+            console.log("qa_error: ", e)
+        }
+
+
+        // TODO: update UI
+        console.log("Answer", question);
+
+        return question;
+
     },
 
     need_context: (request) => request,
