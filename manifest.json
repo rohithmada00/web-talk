@@ -20,7 +20,9 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "src/webSpeech.js"
+                "src/webSpeech.js",
+                "src/services/groqService.js",
+                "src/services/actions.js"
             ],
             "matches": [
                 "<all_urls>"

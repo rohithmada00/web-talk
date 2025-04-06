@@ -1,37 +1,15 @@
-<!-- <!DOCTYPE html>
-<html>
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Web talk</title>
-</head>
-
-<body>
-    <header>
-        <button id="start-btn"> Start </button>
-        <button id="stop-btn"> Stop </button>
-    </header>
-
-    <header>
-        <div id="speech-to-text"> Speech to text </div>
-    </header>
-    <script src="../../webSpeech.js" type="module"></script>
-
-</body>
-
-</html> -->
-
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Web Talk</title>
   <!-- Include Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="panel.css" />
 </head>
+
 <body>
 
 
@@ -43,22 +21,20 @@
         <h1>Web Talk</h1>
       </div>
     </header>
-    
+
 
 
     <!-- Voice Input Section: Speak button and recognized text field side by side -->
     <section id="voice-input">
       <div class="voice-input-container">
-        <button 
-            id="start-btn" 
-            >
-            <img src="../../../assets/icons8-microphone-48.png" alt="Click to Speak" class="speak-icon" />
-            </button>
+        <button id="start-btn">
+          <img src="../../../assets/icons8-microphone-48.png" alt="Click to Speak" class="speak-icon" />
+        </button>
         <div id="speech-to-text" class="recognized-text">
           <!-- Recognized text will be dynamically updated here -->
         </div>
       </div>
-      <p >Search Text</p>
+      <p>Search Text</p>
     </section>
 
 

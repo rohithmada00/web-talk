@@ -1,9 +1,10 @@
 // speech recognition logic
+import { decideAction } from "./services/groqService.js";
+import { dataToAction } from "./services/actions.js";
 
 var recognizing = false;
 var final_transcript = '';
 var transcript = '';
-var start_timestamp;
 let speech_to_text;
 
 // detect if user was redirected to a full tab for mic access
@@ -15,15 +16,12 @@ if (!('webkitSpeechRecognition' in window)) {
 } else {
     var recognition = new webkitSpeechRecognition();
     recognition.continuous = true;
-    recognition.interimResults = true;
 
     document.addEventListener("DOMContentLoaded", () => {
         const startBtn = document.getElementById("start-btn");
-        const stopBtn = document.getElementById("start-btn");
         speech_to_text = document.getElementById("speech-to-text");
 
         startBtn.addEventListener("click", startButton);
-        stopBtn.addEventListener("click", stopButton);
 
         // Optional: clean up URL after redirect
         if (micRedirected) {
@@ -32,7 +30,6 @@ if (!('webkitSpeechRecognition' in window)) {
     });
 
     recognition.onerror = function (event) {
-        console.error("Speech error:", event.error, "Trusted:", event.isTrusted, "Timestamp:", event.timeStamp);
         showInfo("Error: " + event.error);
     };
 
@@ -43,20 +40,23 @@ if (!('webkitSpeechRecognition' in window)) {
         }
     };
 
-    recognition.onresult = function (event) {
-        var interim_transcript = '';
+    recognition.onresult = async function (event) {
         final_transcript = '';
 
         for (var i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
                 final_transcript += event.results[i][0].transcript;
-            } else {
-                interim_transcript += event.results[i][0].transcript;
+                const { action, data } = await decideAction(final_transcript);
+                if (!action || !data) {
+                    console.warn("Invalid LLM response");
+                    return;
+                }
+                dataToAction(action, data);
             }
         }
         final_transcript = capitalize(final_transcript);
         speech_to_text.innerHTML = linebreak(final_transcript);
-        showInfo(interim_transcript);
+
     };
 
     recognition.onstart = function () {
@@ -93,16 +93,15 @@ async function startButton(event) {
         recognition.stop();
         final_transcript = '';
     }
-    else{
-    const allowed = await ensureMicPermissionOrRedirect(event);
-    if (!allowed) return;
+    else {
+        const allowed = await ensureMicPermissionOrRedirect(event);
+        if (!allowed) return;
 
-    final_transcript = '';
-    recognition.lang = "en-US";
-    recognition.start();
-    speech_to_text.innerHTML = '';
-    showInfo('info_allow');
-    start_timestamp = event.timeStamp;
+        final_transcript = '';
+        recognition.lang = "en-US";
+        recognition.start();
+        speech_to_text.innerHTML = '';
+        showInfo('info_allow');
     }
 }
 
