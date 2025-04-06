@@ -4,7 +4,7 @@ async function callApi(prompt) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <GROQ_API_KEY>',
+                'Authorization': 'Bearer <GROQ_KEY_HERE>',
             },
             body: JSON.stringify({
                 model: 'gemma2-9b-it',
@@ -12,7 +12,7 @@ async function callApi(prompt) {
                     { role: 'system', content: 'You are a helpful browser assistant.' },
                     { role: 'user', content: prompt }
                 ],
-                max_tokens: 10000,
+                max_tokens: 1000,
                 temperature: 0.7
             })
         });
@@ -77,8 +77,7 @@ function decideActionPrompt(user_transcript) {
             "action": "ask_question",
             "data": User question here
             }
-            5. "need_context" - Use this **only if** your next action needs page context, and the user's input isn't clearly a request to summarize.
-
+            
             If the user's command does not clearly match any of the above actions, default to a "search" action using the most relevant keywords from the command.
 
             Here is the user's command: ${user_transcript}

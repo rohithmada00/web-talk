@@ -23,7 +23,19 @@ if (!('webkitSpeechRecognition' in window)) {
         speech_to_text = document.getElementById("speech-to-text");
         answer_box = document.getElementById("answer-container");
 
-        startBtn.addEventListener("click", startButton);
+        startBtn.addEventListener("click",()=>{
+            
+            const hasGradient = startBtn.classList.contains('clicked-gradient');
+            const isListening = startBtn.classList.contains('listening');
+
+            if (hasGradient && isListening) {
+                // If both classes are present, remove them
+                startBtn.classList.remove('clicked-gradient', 'listening');
+            } else {
+                // Otherwise, add both classes
+                startBtn.classList.add('clicked-gradient', 'listening');
+            }
+            startButton();});
 
         // Optional: clean up URL after redirect
         if (micRedirected) {

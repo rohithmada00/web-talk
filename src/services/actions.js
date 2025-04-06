@@ -27,7 +27,9 @@ const actions = {
             }
         }
         catch (e) {
+            summary = "Summary could not be fetched";
             console.log("summarize_page: ", e)
+            
         }
 
 
@@ -54,6 +56,7 @@ const actions = {
             }
         }
         catch (e) {
+            question = "Cannot be answered"
             console.log("qa_error: ", e)
         }
 
