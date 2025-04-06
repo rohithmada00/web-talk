@@ -1,18 +1,16 @@
-export async function decideAction(text) {
-    console.log(text)
-
+async function callApi(prompt) {
     try {
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <GROQ_API_KEY_HERE>',
+                'Authorization': 'Bearer <GROQ_API_KEY_HERE"',
             },
             body: JSON.stringify({
                 model: 'gemma2-9b-it',
                 messages: [
                     { role: 'system', content: 'You are a helpful browser assistant.' },
-                    { role: 'user', content: make_prompt(text) }
+                    { role: 'user', content: prompt }
                 ],
                 max_tokens: 1000,
                 temperature: 0.7
@@ -46,17 +44,31 @@ export async function decideAction(text) {
 }
 
 
-// prompt function
 
-function make_prompt(user_transcript) {
+export async function decideAction(transcript) {
+    return callApi(decideActionPrompt(transcript));
+}
+
+export async function summarize(context) {
+    return callApi(summarize_prompt(context));
+}
+
+
+// prompt function
+function decideActionPrompt(user_transcript) {
     const prompt = `
             You are a browser assistant. Based on the user's command, decide what action to take and respond with an action and its associated data.
 
             The available actions are:
             1. "search" - Use this for general search action, return what to search in google to get an apt browse result.
             2. "navigate" - Use this to navigate to a website. Return a complete URL for that website".
-            3. "summarize_page" - If the user asks to summarize the current webpage, such as "Summarize this page" or "What is this page about?".
+            3. "summarize_page" – Use this to summarize the page. If you don't have the HTML/text content of the page yet, return this:
+            {
+            "action": "summarize_page",
+            "data": "NEED_CONTEXT"
+            }
             4. "ask_question" - If the user asks a specific question about the content of the page, such as "What is the title of this page?" or "What is this page about?".
+            5. "need_context" – Use this **only if** your next action needs page context, and the user's input isn't clearly a request to summarize.
 
             If the user's command does not clearly match any of the above actions, default to a "search" action using the most relevant keywords from the command.
 
@@ -72,20 +84,40 @@ function make_prompt(user_transcript) {
     return prompt;
 }
 
+function summarize_prompt(context) {
+    const prompt = `
+    You are a helpful assistant. Summarize the following webpage content clearly and concisely. Focus only on the meaningful information and ignore repetitive navigation links, ads, headers, or irrelevant data.
+    Here is the content of the webpage:
+    """ 
+    ${context} 
+    """
+    Provide a short summary in under 100 words. 
+    Reply in the following format:
+    {
+    "action": "summarize_page", 
+    "data": "summary"
+    }
+    `
+
+    return prompt;
+}
+
 
 // parse api response
 function parseLLMResponse(raw) {
     try {
-        // Remove Markdown code block markers
         const cleaned = raw
-            .replace(/```json/i, '')  // remove starting ```json
-            .replace(/```/, '')       // remove ending ```
+            .replace(/```json/i, "")
+            .replace(/```/, "")
             .trim();
 
-        const parsed = JSON.parse(cleaned);
-        return parsed;
-    } catch (err) {
-        console.error(" Failed to parse LLM response:", err);
+        // Only extract the first { ... } JSON block
+        const jsonMatch = cleaned.match(/\{[\s\S]*?\}/);
+        if (!jsonMatch) return null;
+
+        return JSON.parse(jsonMatch[0]);
+    } catch (e) {
+        console.error(" Failed to parse LLM response:", e);
         return null;
     }
 }

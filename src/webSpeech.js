@@ -6,6 +6,7 @@ var recognizing = false;
 var final_transcript = '';
 var transcript = '';
 let speech_to_text;
+let answer_box;
 
 // detect if user was redirected to a full tab for mic access
 const urlParams = new URLSearchParams(window.location.search);
@@ -20,6 +21,7 @@ if (!('webkitSpeechRecognition' in window)) {
     document.addEventListener("DOMContentLoaded", () => {
         const startBtn = document.getElementById("start-btn");
         speech_to_text = document.getElementById("speech-to-text");
+        answer_box = document.getElementById("answer-container");
 
         startBtn.addEventListener("click", startButton);
 
@@ -42,6 +44,7 @@ if (!('webkitSpeechRecognition' in window)) {
 
     recognition.onresult = async function (event) {
         final_transcript = '';
+        answer_box.textContent = linebreak(" Your summary or response will appear here.");
 
         for (var i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
@@ -51,7 +54,11 @@ if (!('webkitSpeechRecognition' in window)) {
                     console.warn("Invalid LLM response");
                     return;
                 }
-                dataToAction(action, data);
+                const result = await dataToAction(action, data);
+                if (result) {
+                    console.log("Page Summary to update", linebreak(result));
+                    answer_box.textContent = linebreak(result);
+                }
             }
         }
         final_transcript = capitalize(final_transcript);
