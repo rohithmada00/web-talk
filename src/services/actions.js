@@ -23,7 +23,7 @@ const actions = {
             if (!response) {
                 summary = "Summary could not be fetched";
             } else {
-                summary = response.data;
+                summary = response;
             }
         }
         catch (e) {
@@ -52,7 +52,7 @@ const actions = {
             if (!response) {
                 question = "Answer could not be fetched";
             } else {
-                question = response.data;
+                question = response;
             }
         }
         catch (e) {

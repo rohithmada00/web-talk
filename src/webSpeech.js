@@ -12,6 +12,7 @@ let answer_box;
 const urlParams = new URLSearchParams(window.location.search);
 const micRedirected = urlParams.get('mic') === '1';
 
+
 if (!('webkitSpeechRecognition' in window)) {
     alert('This browser does not support speech recognition. Try Chrome.');
 } else {
@@ -22,7 +23,6 @@ if (!('webkitSpeechRecognition' in window)) {
         const startBtn = document.getElementById("start-btn");
         speech_to_text = document.getElementById("speech-to-text");
         answer_box = document.getElementById("answer-container");
-
         startBtn.addEventListener("click",()=>{
             
             const hasGradient = startBtn.classList.contains('clicked-gradient');
@@ -68,8 +68,8 @@ if (!('webkitSpeechRecognition' in window)) {
                 }
                 const result = await dataToAction(action, data);
                 if (result) {
-                    console.log("Page Summary to update", linebreak(result));
-                    answer_box.textContent = linebreak(result);
+                    console.log("Page Summary to update", result);
+                    answer_box.innerHTML = (linebreak(convertMarkdownBoldToHTML(result)));
                 }
             }
         }
@@ -141,3 +141,8 @@ const one_line = /\n/g;
 function linebreak(s) {
     return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
 }
+
+function convertMarkdownBoldToHTML(text) {
+    return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  }
+  

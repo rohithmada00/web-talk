@@ -8,6 +8,12 @@
         "activeTab",
         "scripting"
     ],
+    "background": {
+    "service_worker": "background.js"
+    },
+    "side_panel": {
+    "default_path": "src/ui/pages/panel.html"
+    },
     "icons": {
         "16": "assets/icon16.png",
         "32": "assets/icon32.png",
@@ -15,7 +21,7 @@
         "128": "assets/icon128.png"
     },
     "action": {
-        "default_popup": "src/ui/pages/panel.html"
+    "default_popup": "src/ui/pages/panel.html"
     },
     "web_accessible_resources": [
         {
@@ -35,4 +41,5 @@
     "host_permissions": [
         "<all_urls>"
     ]
+    
 }
