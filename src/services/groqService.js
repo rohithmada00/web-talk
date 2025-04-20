@@ -4,7 +4,7 @@ async function callApi(prompt) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <GROQ API KEY>',
+                'Authorization': 'Bearer ',
             },
             body: JSON.stringify({
                 model: 'gemma2-9b-it',
