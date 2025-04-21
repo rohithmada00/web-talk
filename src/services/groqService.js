@@ -4,7 +4,7 @@ async function callApi(prompt) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ',
+                'Authorization': 'Bearer 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',
             },
             body: JSON.stringify({
                 model: 'gemma2-9b-it',

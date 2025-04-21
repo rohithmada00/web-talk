@@ -23,6 +23,8 @@ if (!('webkitSpeechRecognition' in window)) {
         const startBtn = document.getElementById("start-btn");
         speech_to_text = document.getElementById("speech-to-text");
         answer_box = document.getElementById("answer-container");
+        const cross_btn = document.getElementById("close-panel-btn");
+        cross_btn.addEventListener("click", closePanel);
         startBtn.addEventListener("click",()=>{
             
             const hasGradient = startBtn.classList.contains('clicked-gradient');
