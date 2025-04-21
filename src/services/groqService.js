@@ -4,7 +4,7 @@ async function callApi(prompt) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer <GROQ_KEY_HERE>',
+                'Authorization': 'Bearer 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',
             },
             body: JSON.stringify({
                 model: 'gemma2-9b-it',
@@ -100,11 +100,7 @@ function summarize_prompt(context) {
     ${context} 
     """
     Provide a short summary in under 100 words. 
-    Reply in the following format:
-    {
-    "action": "summarize_page", 
-    "data": "summary"
-    }
+    
     `
 
     return prompt;
@@ -118,11 +114,7 @@ function qa_prompt(context) {
     ${context} 
     """
     Provide the answer in under 100 words. 
-    Reply in the following format:
-    {
-    "action": "ask_question", 
-    "data": "answer"
-    }
+    
     `
 
     return prompt;
@@ -139,9 +131,8 @@ function parseLLMResponse(raw) {
 
         // Only extract the first { ... } JSON block
         const jsonMatch = cleaned.match(/\{[\s\S]*?\}/);
-        if (!jsonMatch) return null;
-
-        return JSON.parse(jsonMatch[0]);
+        if (jsonMatch) {return JSON.parse(jsonMatch[0]);}
+        else{return raw}
     } catch (e) {
         console.error(" Failed to parse LLM response:", e);
         return null;

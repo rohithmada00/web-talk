@@ -9,6 +9,8 @@ body {
   /* Popup Container */
   #popup {
     width: 340px;
+    min-height: 500px;
+    height:auto;
     background: #f5f9ff;
     border-radius: 10px;
     overflow: hidden;
@@ -102,7 +104,7 @@ body {
     padding-bottom: 8px;
   }
   .answer-container {
-    max-height: 100px;
+    max-height: 400px;
     overflow-y: auto;
     border: 1px solid #dadce0;
     padding: 10px;
@@ -140,5 +142,26 @@ body {
   .clicked-gradient {
     background: linear-gradient(45deg, blue 0%, red 0%, green 50%, yellow 100%);
     transition: background 0.3s ease;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 10;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .close-btn:hover {
+    color: #ff5252;
+  }
+  header {
+    position: relative; /* Make sure the header is positioned for absolute children */
   }
   
